@@ -4,9 +4,9 @@ const User = require("../models/User");
 const router = express.Router();
 
 
-router.get("/", async (req, res) => {
-    res.send("Hoşgeldiniz.")
-})
+// router.get("/", async (req, res) => {
+//     res.send("Hoşgeldiniz.")
+// })
 
 router.get("/:id", async (req, res) => {
     try {
@@ -64,7 +64,19 @@ router.delete("/:id", verify, async (req, res) => {
     }
 })
 
+// Get User  
+router.get("/find/:id", async (req, res) => {
+    // no necessary verify --> everyone can see other's profiles
+    try {
+        const user = await User.findById(req.params.id)
 
+        const { password, ...info } = user._doc;
+
+        res.status(200).json(info)
+    } catch (error) {
+        res.status(500).json(error)
+    }
+})
 
 
 
