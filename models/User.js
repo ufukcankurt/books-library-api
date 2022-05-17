@@ -1,6 +1,10 @@
 const mongoose = require("mongoose")
 
 const UserSchema = new mongoose.Schema({
+    userId:{
+        type:String,
+        required:true
+    },
     fullname: {
         type: String,
         required: true,
@@ -22,6 +26,21 @@ const UserSchema = new mongoose.Schema({
         type: String,
         required: true,
         min: 6
+    },
+    dob_day: {
+        type: String,
+        required: true,
+        max: 2
+    },
+    dob_month: {
+        type: String,
+        required: true,
+        max: 2
+    },
+    dob_year: {
+        type: String,
+        required: true,
+        max: 4
     },
     profilePicture: {
         type: String,
@@ -54,6 +73,10 @@ const UserSchema = new mongoose.Schema({
     education: {
         type: String,
         max: 50
+    },
+    gender:{
+        type: String,
+        required:true
     },
     readingTarget: {
         type: String,
