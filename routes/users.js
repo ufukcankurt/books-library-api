@@ -78,6 +78,27 @@ router.get("/find/:id", async (req, res) => {
     }
 })
 
+// if we're not admin there is no sense to see all users.
+// GET ALL User
+router.get("/", verify, async (req, res) => { // "/?new=true" --> query
+    const query = req.query.new;
+    // req.user.id === this is coming from verifyToken (req.user)
+    // allow if user id is equal or is admin
+    if (req.user.isAdmin) {
+
+        try {
+            // only get last 10 New User ---> if no query we're gonna fetch all users
+            // sort({_id:-1}) --> it's provide to get latest datas
+            const users = query ? await User.find().sort({_id:-1}).limit(10) : await User.find();
+            res.status(200).json(users)
+        } catch (error) {
+            res.status(500).json(error)
+        }
+
+    } else {
+        res.status(403).json("You are not allowed to see all users! ") 
+    }
+})
 
 
 module.exports = router;
