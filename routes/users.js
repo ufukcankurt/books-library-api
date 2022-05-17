@@ -35,7 +35,7 @@ router.put("/:id", verify, async (req, res) => {
             // and then we can set new properties  // we send all body 
             const updatedUser = await User.findByIdAndUpdate(req.params.id, {
                 $set: req.body,
-            },{new:true}) // after setting new user
+            }, { new: true }) // after setting new user
             res.status(200).json(updatedUser)
         } catch (error) {
             res.status(500).json(error)
@@ -45,6 +45,26 @@ router.put("/:id", verify, async (req, res) => {
         res.status(403).json("You can update only your account ") // 403|forbidden
     }
 })
+
+// Delete User  
+router.delete("/:id", verify, async (req, res) => {
+    // req.user.id === this is coming from verifyToken (req.user)
+    // allow if user id is equal or is admin
+    if (req.user.id === req.params.id || req.user.isAdmin) {
+
+        try {
+            await User.findByIdAndDelete(req.params.id)
+            res.status(200).json("User has been deleted")
+        } catch (error) {
+            res.status(500).json(error)
+        }
+
+    } else {
+        res.status(403).json("You can update only your account ") // 403|forbidden
+    }
+})
+
+
 
 
 
