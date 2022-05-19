@@ -1,4 +1,5 @@
 const Post = require("../models/Post");
+const User = require("../models/User")
 
 const router = require("express").Router();
 
@@ -19,10 +20,10 @@ router.put("/:id", async (req, res) => {
     try {
         const post = await Post.findById(req.params.id);
 
-        if(post.userId = req.body.userId){
-            await post.updateOne({$set:req.body});
+        if (post.userId = req.body.userId) {
+            await post.updateOne({ $set: req.body });
             res.status(200).json("The post has been updated")
-        }else{
+        } else {
             res.status(403).json("You can update only your post")
         }
     } catch (error) {
@@ -33,7 +34,7 @@ router.put("/:id", async (req, res) => {
 // DELETE A POST
 
 // GET A POST
-router.get("/:id", async (req,res)=> {
+router.get("/:id", async (req, res) => {
     try {
         const post = await Post.findById(req.params.id)
 
@@ -43,6 +44,17 @@ router.get("/:id", async (req,res)=> {
     }
 })
 
-// GET TİMELİNE POST
+
+//GET USER'S ALL PROFİLE POST
+router.get("/profile/:username", async (req, res) => {
+    try {
+        const user = await User.findOne({ username: req.params.username });
+        const posts = await Post.find({ userId: user._id });
+        res.status(200).json(posts);
+    } catch (err) {
+        res.status(500).json(err);
+    }
+});
+
 
 module.exports = router;
