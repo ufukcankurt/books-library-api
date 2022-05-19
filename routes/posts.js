@@ -29,8 +29,20 @@ router.put("/:id", async (req, res) => {
         res.status(500).json(error)
     }
 })
+
 // DELETE A POST
+
 // GET A POST
+router.get("/:id", async (req,res)=> {
+    try {
+        const post = await Post.findById(req.params.id)
+
+        res.status(200).json(post)
+    } catch (error) {
+        res.status(500).json(error)
+    }
+})
+
 // GET TİMELİNE POST
 
 module.exports = router;
