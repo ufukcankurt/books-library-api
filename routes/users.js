@@ -105,30 +105,27 @@ router.get("/friends/:userId", async (req, res) => {
 // ADD BOOK
 router.put("/:id/book", verify, async (req, res) => {
     console.log("req.body.bookId", req.body.bookId)
-    // if (req.user.id === req.params.id || req.user.isAdmin) {
-    try {
-        const user = await User.findById(req.params.id);
-        let sonuc = false;
-        user.bookShelf.filter((item, i) => item.bookId === req.body.bookId ? sonuc = i : sonuc = "-1")
-        if (sonuc === "-1") {
-            await user.updateOne({ $push: { bookShelf: req.body } })
-            res.status(200).json("Book has been added");
-        } else {
-            const updatedBook = await User.findOneAndUpdate({ "bookShelf.bookId": req.body.bookId, _id: req.params.id }, {
-                $set: { "bookShelf.$": req.body },
-                // $set: { "bookShelf.$.bookHasShelf": req.body.bookHasShelf },
-                // $set: { "bookShelf.$.bookStart": req.body.bookStart },
-                // $set: { "bookShelf.$.bookEnd": req.body.bookEnd },
-            }, { new: true })
-            res.status(200).json(updatedBook)
+    if (req.user.id === req.params.id || req.user.isAdmin) {
+        try {
+            const user = await User.findById(req.params.id);
+            let sonuc = false;
+            user.bookShelf.filter((item, i) => item.bookId === req.body.bookId ? sonuc = i : sonuc = "-1")
+            if (sonuc === "-1") {
+                await user.updateOne({ $push: { bookShelf: req.body } })
+                res.status(200).json("Book has been added");
+            } else {
+                const updatedBook = await User.findOneAndUpdate({ "bookShelf.bookId": req.body.bookId, _id: req.params.id }, {
+                    $set: { "bookShelf.$": req.body },
+                }, { new: true })
+                res.status(200).json(updatedBook)
+            }
+        } catch (error) {
+            console.log(error)
+            res.status(500).json(error)
         }
-    } catch (error) {
-        console.log(error)
-        res.status(500).json(error)
+    } else {
+        res.status(403).json("You can update only your account ") // 403|forbidden
     }
-    // } else {
-    //     res.status(403).json("You can update only your account ") // 403|forbidden
-    // }
 })
 
 // FOLLOW USER
