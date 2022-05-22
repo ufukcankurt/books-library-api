@@ -8,10 +8,14 @@ const router = express.Router();
 //     res.send("Hoşgeldiniz.")
 // })
 
-router.get("/:id", async (req, res) => {
+router.get("/", async (req, res) => {
+    const userId = req.query.userId
+    const username = req.query.username
     try {
-        const user = await User.findById(req.params.id)
-        const { ...other } = user._doc
+        const user = userId
+            ? await User.findById(userId)
+            : await User.findOne({ username: username })
+        const { password, updatedAt, ...other } = user._doc
         res.status(200).json(other)
     } catch (error) {
         res.status(500).json(error)
@@ -24,11 +28,11 @@ router.put("/:id", verify, async (req, res) => {
     // allow if user id is equal or is admin
     if (req.user.id === req.params.id || req.user.isAdmin) {
         // first we have to check if the password has changed
-        if (req.body.password) {
-            const salt = await bcrypt.genSalt(10);
-            const hashedPassword = await bcrypt.hash(formData.password, salt);
-            req.body.password = hashedPassword
-        }
+        // if (req.body.password) {
+        //     const salt = await bcrypt.genSalt(10);
+        //     const hashedPassword = await bcrypt.hash(formData.password, salt);
+        //     req.body.password = hashedPassword
+        // }
 
         try {
             // firstly we can find this user (req.params.id)
@@ -79,18 +83,18 @@ router.get("/find/:id", async (req, res) => {
 })
 
 // GET Friends
-router.get("/friends/:userId", async (req, res)=> {
+router.get("/friends/:userId", async (req, res) => {
     try {
         const user = await User.findById(req.params.userId);
         const friends = await Promise.all(
-            user.followings.map((friendId)=>{
+            user.followings.map((friendId) => {
                 return User.findById(friendId);
             })
         )
         let friendList = [];
-        friends.map((friend)=> {
-            const {_id, username, profilePicture} = friend;
-            friendList.push({_id, username, profilePicture})
+        friends.map((friend) => {
+            const { _id, username, profilePicture } = friend;
+            friendList.push({ _id, username, profilePicture })
         })
         res.status(200).json(friendList)
     } catch (error) {
@@ -98,44 +102,80 @@ router.get("/friends/:userId", async (req, res)=> {
     }
 })
 
+// ADD BOOK
+router.put("/:id/book", verify, async (req, res) => {
+    console.log("req.body.bookId", req.body.bookId)
+    // if (req.user.id === req.params.id || req.user.isAdmin) {
+    try {
+        console.log("try başı");
+        const user = await User.findById(req.params.id);
+        let sonuc = false;
+        user.bookShelf.filter((item, i) => item.bookId === req.body.bookId ? sonuc = i : sonuc = "-1")
+        if (sonuc === "-1") {
+            console.log("if başı");
+            await user.updateOne({ $push: { bookShelf: req.body } })
+            res.status(200).json("Book has been added");
+            console.log("İF E GİRDİ")
+        } else {
+            console.log("else girdi üst");
+            const updatedBook = await User.findOneAndUpdate({ "bookShelf.bookId": req.body.bookId, _id: req.params.id }, {
+                $set: { "bookShelf.$": req.body },
+                // $set: { "bookShelf.$.bookHasShelf": req.body.bookHasShelf },
+                // $set: { "bookShelf.$.bookStart": req.body.bookStart },
+                // $set: { "bookShelf.$.bookEnd": req.body.bookEnd },
+            }, { new: true })
+            console.log("ELSE E GİRDİ KANKA")
+            res.status(200).json(updatedBook)
+        }
+    } catch (error) {
+        console.log(error)
+        res.status(500).json(error)
+    }
+    // } else {
+    //     res.status(403).json("You can update only your account ") // 403|forbidden
+    // }
+})
+
 // FOLLOW USER
-router.put("/:id/follow", async (req, res)=> {
-    if( req.body.userId !== req.params.id ){
+router.put("/:id/follow", async (req, res) => {
+    console.log("req.body.userıd", req.body.userId);
+    console.log("req.params.id", req.params.id);
+    if (req.body.userId !== req.params.id) {
         try {
             const user = await User.findById(req.params.id)
             const currentUser = await User.findById(req.body.userId)
-            if(!user.followers.includes(req.body.userId)){
-                await user.updateOne({$push:{followers:req.body.userId}})
-                await currentUser.updateOne({$push:{followings:req.params.id}})
+            if (!user.followers.includes(req.body.userId)) {
+                await user.updateOne({ $push: { followers: req.body.userId } })
+                await currentUser.updateOne({ $push: { followings: req.params.id } })
                 res.status(200).json("User has been followed")
-            }else{
+            } else {
                 res.status(403).json("You already follow this user")
             }
         } catch (error) {
             res.status(500).json(error)
         }
-    }else{
+    } else {
         res.status(403).json("You can't follow yourself")
     }
 })
 
 // UNFOLLOW USER
-router.put("/:id/unfollow", async (req, res)=> {
-    if( req.body.userId !== req.params.id ){
+router.put("/:id/unfollow", async (req, res) => {
+    if (req.body.userId !== req.params.id) {
         try {
             const user = await User.findById(req.params.id)
             const currentUser = await User.findById(req.body.userId)
-            if(user.followers.includes(req.body.userId)){
-                await user.updateOne({$pull:{followers:req.body.userId}})
-                await currentUser.updateOne({$pull:{followings:req.params.id}})
+            if (user.followers.includes(req.body.userId)) {
+                await user.updateOne({ $pull: { followers: req.body.userId } })
+                await currentUser.updateOne({ $pull: { followings: req.params.id } })
                 res.status(200).json("User has been unfollowed")
-            }else{
+            } else {
                 res.status(403).json("You don't follow this user")
             }
         } catch (error) {
             res.status(500).json(error)
         }
-    }else{
+    } else {
         res.status(403).json("You can't unfollow yourself")
     }
 })
@@ -151,14 +191,14 @@ router.get("/", verify, async (req, res) => { // "/?new=true" --> query
         try {
             // only get last 10 New User ---> if no query we're gonna fetch all users
             // sort({_id:-1}) --> it's provide to get latest datas
-            const users = query ? await User.find().sort({_id:-1}).limit(10) : await User.find();
+            const users = query ? await User.find().sort({ _id: -1 }).limit(10) : await User.find();
             res.status(200).json(users)
         } catch (error) {
             res.status(500).json(error)
         }
 
     } else {
-        res.status(403).json("You are not allowed to see all users! ") 
+        res.status(403).json("You are not allowed to see all users! ")
     }
 })
 
