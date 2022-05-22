@@ -1,9 +1,32 @@
 const mongoose = require("mongoose")
 
+const shelfSchema = new mongoose.Schema({
+    bookId: {
+        type: String,
+        default: ""
+    },
+    bookStatus: {
+        type: String,
+        default: ""
+    },
+    bookHasShelf: {
+        type: Array,
+        default: []
+    },
+    bookStart: {
+        type: String,
+        default: ""
+    },
+    bookEnd: {
+        type: String,
+        default: ""
+    }
+})
+
 const UserSchema = new mongoose.Schema({
-    userId:{
-        type:String,
-        required:true
+    userId: {
+        type: String,
+        required: true
     },
     fullname: {
         type: String,
@@ -64,32 +87,49 @@ const UserSchema = new mongoose.Schema({
     },
     desc: {
         type: String,
-        max: 50
+        max: 50,
+        default: ""
     },
     city: {
         type: String,
-        max: 50
+        max: 50,
+        default: ""
+    },
+    job: {
+        type: String,
+        max: 50,
+        default: ""
     },
     education: {
         type: String,
-        max: 50
+        max: 50,
+        default: ""
     },
-    gender:{
+    website: {
         type: String,
-        required:true
+        max: 50,
+        default: ""
+    },
+    gender: {
+        type: String,
+        required: true,
     },
     readingTarget: {
         type: String,
-        max: 50
+        max: 50,
+        default: ""
     },
     didRead: {
         type: String,
-        max: 50
+        max: 50,
+        default: ""
     },
     willRead: {
         type: String,
-        max: 50
-    }
+        max: 50,
+        default: ""
+    },
+    bookShelf: [shelfSchema]
 },
     { timestamps: true }
 )
