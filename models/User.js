@@ -3,7 +3,8 @@ const mongoose = require("mongoose")
 const shelfSchema = new mongoose.Schema({
     bookId: {
         type: String,
-        default: ""
+        default: "",
+        unique:true
     },
     bookStatus: {
         type: String,
@@ -13,14 +14,30 @@ const shelfSchema = new mongoose.Schema({
         type: Array,
         default: []
     },
-    bookStart: {
+    bookStartDay: {
         type: String,
         default: ""
     },
-    bookEnd: {
+    bookStartMonth: {
         type: String,
         default: ""
-    }
+    },
+    bookStartYear: {
+        type: String,
+        default: ""
+    },
+    bookEndDay: {
+        type: String,
+        default: ""
+    },
+    bookEndMonth: {
+        type: String,
+        default: ""
+    },
+    bookEndYear: {
+        type: String,
+        default: ""
+    },
 })
 
 const UserSchema = new mongoose.Schema({
@@ -52,15 +69,18 @@ const UserSchema = new mongoose.Schema({
     },
     dob_day: {
         type: String,
-        max: 2
+        max: 2,
+        min: 2
     },
     dob_month: {
         type: String,
-        max: 2
+        max: 2,
+        min: 2
     },
     dob_year: {
         type: String,
-        max: 4
+        max: 4,
+        min:4
     },
     profilePicture: {
         type: String,
@@ -84,7 +104,7 @@ const UserSchema = new mongoose.Schema({
     },
     desc: {
         type: String,
-        max: 50,
+        max: 150,
         default: ""
     },
     city: {

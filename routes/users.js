@@ -109,8 +109,8 @@ router.put("/:id/book", verify, async (req, res) => {
         try {
             const user = await User.findById(req.params.id);
             let sonuc = false;
-            user.bookShelf.filter((item, i) => item.bookId === req.body.bookId ? sonuc = i : sonuc = "-1")
-            if (sonuc === "-1") {
+            user.bookShelf?.filter((item, i) => item.bookId === req.body.bookId ? sonuc = i : sonuc = "-1")
+            if (sonuc === "-1" || sonuc === false) {
                 await user.updateOne({ $push: { bookShelf: req.body } })
                 res.status(200).json("Book has been added");
             } else {
@@ -124,6 +124,7 @@ router.put("/:id/book", verify, async (req, res) => {
             res.status(500).json(error)
         }
     } else {
+        console.log("ELSE İÇİ You can update only your account ");
         res.status(403).json("You can update only your account ") // 403|forbidden
     }
 })
