@@ -107,24 +107,19 @@ router.put("/:id/book", verify, async (req, res) => {
     console.log("req.body.bookId", req.body.bookId)
     // if (req.user.id === req.params.id || req.user.isAdmin) {
     try {
-        console.log("try başı");
         const user = await User.findById(req.params.id);
         let sonuc = false;
         user.bookShelf.filter((item, i) => item.bookId === req.body.bookId ? sonuc = i : sonuc = "-1")
         if (sonuc === "-1") {
-            console.log("if başı");
             await user.updateOne({ $push: { bookShelf: req.body } })
             res.status(200).json("Book has been added");
-            console.log("İF E GİRDİ")
         } else {
-            console.log("else girdi üst");
             const updatedBook = await User.findOneAndUpdate({ "bookShelf.bookId": req.body.bookId, _id: req.params.id }, {
                 $set: { "bookShelf.$": req.body },
                 // $set: { "bookShelf.$.bookHasShelf": req.body.bookHasShelf },
                 // $set: { "bookShelf.$.bookStart": req.body.bookStart },
                 // $set: { "bookShelf.$.bookEnd": req.body.bookEnd },
             }, { new: true })
-            console.log("ELSE E GİRDİ KANKA")
             res.status(200).json(updatedBook)
         }
     } catch (error) {
