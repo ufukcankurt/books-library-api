@@ -52,17 +52,14 @@ const UserSchema = new mongoose.Schema({
     },
     dob_day: {
         type: String,
-        required: true,
         max: 2
     },
     dob_month: {
         type: String,
-        required: true,
         max: 2
     },
     dob_year: {
         type: String,
-        required: true,
         max: 4
     },
     profilePicture: {
