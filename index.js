@@ -8,8 +8,11 @@ const cors = require("cors")
 
 const userRoute = require("./routes/users")
 const authRoute = require("./routes/auth")
+const bookRoute = require("./routes/books")
+const postRoute = require("./routes/posts")
 
 dotenv.config();
+
 
 mongoose.connect(
     process.env.MONGO_URL,
@@ -27,6 +30,8 @@ app.use(cors())
 // address for rest API  || whenever go to this adress  it's gonna run this router.
 app.use("/api/users", userRoute);
 app.use("/api/auth", authRoute);
+app.use("/api/books", bookRoute);
+app.use("/api/posts", postRoute);
 
 
 
