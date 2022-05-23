@@ -14,27 +14,12 @@ const shelfSchema = new mongoose.Schema({
         type: Array,
         default: []
     },
-    bookStartDay: {
+    bookStart: {
         type: String,
         default: ""
     },
-    bookStartMonth: {
-        type: String,
-        default: ""
-    },
-    bookStartYear: {
-        type: String,
-        default: ""
-    },
-    bookEndDay: {
-        type: String,
-        default: ""
-    },
-    bookEndMonth: {
-        type: String,
-        default: ""
-    },
-    bookEndYear: {
+   
+    bookEnd: {
         type: String,
         default: ""
     },
@@ -141,10 +126,9 @@ const UserSchema = new mongoose.Schema({
         max: 50,
         default: ""
     },
-    willRead: {
-        type: String,
-        max: 50,
-        default: ""
+    allShelfs: {
+        type: Array,
+        default: []
     },
     bookShelf: [shelfSchema]
 },
