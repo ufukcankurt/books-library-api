@@ -109,7 +109,11 @@ router.put("/:id/book", verify, async (req, res) => {
         try {
             const user = await User.findById(req.params.id);
             let sonuc = false;
-            user.bookShelf?.filter((item, i) => item.bookId === req.body.bookId ? sonuc = true : sonuc = false)
+            user.bookShelf?.map((item, i) => {
+                if (item.bookId === req.body.bookId) {
+                    sonuc = true
+                }
+            })
             if (sonuc === false) {
                 await user.updateOne({ $push: { bookShelf: req.body } })
                 res.status(200).json("Book has been added");
@@ -120,6 +124,7 @@ router.put("/:id/book", verify, async (req, res) => {
                 res.status(200).json(updatedBook)
             }
         } catch (error) {
+            console.log(error);
             res.status(500).json(error)
         }
     } else {
