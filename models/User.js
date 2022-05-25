@@ -23,6 +23,22 @@ const shelfSchema = new mongoose.Schema({
         type: String,
         default: ""
     },
+    bookName:{
+        type: String,
+        default: ""
+    },
+    bookPage:{
+        type: Number,
+        default: ""
+    },
+    bookImg:{
+        type: String,
+        default: ""
+    },
+    bookAuthor:{
+        type: String,
+        default: ""
+    }
 })
 
 const UserSchema = new mongoose.Schema({
@@ -128,7 +144,7 @@ const UserSchema = new mongoose.Schema({
     },
     allShelfs: {
         type: Array,
-        default: []
+        default: ["Okuduklarım","Okuyacaklarım","Yarım Bıraktıklarım"]
     },
     bookShelf: [shelfSchema]
 },
