@@ -4,7 +4,6 @@ const shelfSchema = new mongoose.Schema({
     bookId: {
         type: String,
         default: "",
-        unique:true
     },
     bookStatus: {
         type: String,
