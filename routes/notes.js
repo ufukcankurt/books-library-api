@@ -59,7 +59,17 @@ router.get("/profile/:username",verify , async (req, res) => {
     }
 });
 
-
+//GET BOOK'S ALL NOTES
+router.get("/book/:bookId",verify , async (req, res) => {
+    try {
+        // const user = await User.findOne({ username: req.params.username });
+        const notes = await Note.find({ bookId: req.params.bookId });
+        res.status(200).json(notes);
+    } catch (err) {
+        console.log(err);
+        res.status(500).json(err);
+    }
+});
 
 
 
