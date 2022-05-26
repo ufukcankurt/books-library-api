@@ -35,6 +35,19 @@ router.put("/:id", verify, async (req, res) => {
     }
 })
 
+// GET A NOTE
+router.get("/:id", verify,  async (req, res) => {
+    try {
+        const note = await Note.findById(req.params.id)
+
+        res.status(200).json(note)
+    } catch (error) {
+        console.log(error);
+        res.status(500).json(error)
+    }
+})
+
+
 
 
 
