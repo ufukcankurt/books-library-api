@@ -18,5 +18,24 @@ router.post("/", verify, async (req, res) => {
 })
 
 
+// UPDATE A NOTE
+router.put("/:id", verify, async (req, res) => {
+    try {
+        const note = await Note.findById(req.params.id);
+
+        if (note.userId = req.body.userId) {
+            await note.updateOne({ $set: req.body });
+            res.status(200).json("The note has been updated")
+        } else {
+            res.status(403).json("You can update only your note")
+        }
+    } catch (error) {
+        console.log(error);
+        res.status(500).json(error)
+    }
+})
+
+
+
 
 module.exports = router;
