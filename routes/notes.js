@@ -6,6 +6,8 @@ const router = require("express").Router();
 
 // CREATE A NOTE
 router.post("/", verify, async (req, res) => {
+    console.log("CREATE | ", req.body);
+    console.log(req.body);
     const newNote = new Note(req.body);
 
     try {
@@ -20,6 +22,7 @@ router.post("/", verify, async (req, res) => {
 
 // UPDATE A NOTE
 router.put("/:id", verify, async (req, res) => {
+    console.log("UPDATE | ", req.body);
     try {
         const note = await Note.findById(req.params.id);
 
