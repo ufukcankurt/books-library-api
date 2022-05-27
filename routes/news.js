@@ -77,5 +77,15 @@ router.get("/all/news", async (req, res) => {
     }
 });
 
+//GET NEWS BASED ON CATEGORYNAME
+router.get("/all/news/:categoryName", async (req, res) => {
+    try {
+        const news = await News.find({ category: req.params.categoryName });
+        res.status(200).json(news);
+    } catch (err) {
+        res.status(500).json(err);
+    }
+});
+
 
 module.exports = router;
