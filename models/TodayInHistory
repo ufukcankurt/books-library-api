@@ -5,7 +5,7 @@ const TodayInHistorySchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    AuthorImg: {
+    authorImg: {
         type: String,
         required: true
     },
