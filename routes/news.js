@@ -37,6 +37,23 @@ router.put("/:id", verify, async (req, res) => {
 })
 
 
+// DELETE
+router.delete("/:id", verify, async (req, res) => {
+    if (req.user.isAdmin) {
+
+        try {
+            await News.findByIdAndDelete(req.params.id)
+            res.status(200).json("The news has been deleted");
+        } catch (error) {
+            res.status(500).json(error)
+        }
+    } else {
+        res.status(403).json("You're not allowed") // 403|forbidden
+    }
+})
+
+
+
 
 
 module.exports = router;
