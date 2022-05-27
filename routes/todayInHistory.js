@@ -48,6 +48,15 @@ router.delete("/:id", verify, async (req, res) => {
     }
 })
 
+//GET QUOTE BASED ON DATE
+router.get("/all/today", async (req, res) => {
+    try {
+        const quotes = await TodayInHistory.find({ date: req.body.date });
+        res.status(200).json(quotes);
+    } catch (err) {
+        res.status(500).json(err);
+    }
+});
 
 
 module.exports = router;
