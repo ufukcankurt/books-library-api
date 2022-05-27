@@ -21,6 +21,21 @@ router.post("/", verify, async (req, res) => {
 })
 
 
+// UPDATE
+router.put("/:id", verify, async (req, res) => {
+    if (req.user.isAdmin) {
+
+        try {
+            const updatedNews = await News.findByIdAndUpdate(req.params.id, { $set: req.body }, { new: true })
+            res.status(200).json(updatedNews);
+        } catch (error) {
+            res.status(500).json(error)
+        }
+    } else {
+        res.status(403).json("You're not allowed") // 403|forbidden
+    }
+})
+
 
 
 
