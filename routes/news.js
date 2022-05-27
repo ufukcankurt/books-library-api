@@ -67,6 +67,15 @@ router.get("/:id", verify, async (req, res) => {
 
 })
 
+//GET ALL NEWS
+router.get("/all/news", async (req, res) => {
+    try {
+        const news = await News.find().sort({ _id: -1 });
+        res.status(200).json(news);
+    } catch (err) {
+        res.status(500).json(err);
+    }
+});
 
 
 module.exports = router;
