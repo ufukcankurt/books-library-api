@@ -12,6 +12,7 @@ const bookRoute = require("./routes/books")
 const postRoute = require("./routes/posts")
 const noteRoute = require("./routes/notes")
 const newsRoute = require("./routes/news")
+const todayInHistoryRoute = require("./routes/todayInHistory")
 
 dotenv.config();
 
@@ -36,6 +37,7 @@ app.use("/api/books", bookRoute);
 app.use("/api/posts", postRoute);
 app.use("/api/notes", noteRoute);
 app.use("/api/news", newsRoute);
+app.use("/api/todayInHistory", todayInHistoryRoute);
 
 
 
