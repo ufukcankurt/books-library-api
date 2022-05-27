@@ -49,9 +49,10 @@ router.delete("/:id", verify, async (req, res) => {
 })
 
 //GET QUOTE BASED ON DATE
-router.get("/all/today", async (req, res) => {
+router.get("/all/:today", async (req, res) => {
+    console.log(req.body);
     try {
-        const quotes = await TodayInHistory.find({ date: req.body.date });
+        const quotes = await TodayInHistory.find({ date: req.params.today });
         res.status(200).json(quotes);
     } catch (err) {
         res.status(500).json(err);
