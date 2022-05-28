@@ -202,19 +202,27 @@ router.get("/", verify, async (req, res) => { // "/?new=true" --> query
 // GET BOOKS OR USERS BY SEARCH
 router.get("/get/all/", async (req, res) => {
     const { q } = req.query
-    const keysUser = ["fullname"];
+    try {
+        const users = await User.find({ $or: [{ fullname: { $regex: q, $options: 'i' } }] })
+        const books = await Book.find({ $or: [{ book_name: { $regex: q, $options: 'i' } }] })
 
-    const users = await User.find({ $or: [{ fullname: { $regex: q, $options: 'i' } }] })
-    const books = await Book.find({ $or: [{ book_name: { $regex: q, $options: 'i' } }] })
-
-    const allDatas = users.concat(...books)
-
-    const search = (data) => {
-        return data.filter((item) =>
-            keys.some((key) => item[key].toLowerCase().includes(q.toLowerCase())))
+        const allDatas = users.concat(...books)
+        q ? res.status(200).json(allDatas.slice(0, 10)) : "";
+    } catch (error) {
+        res.status(500).json(error)
     }
+})
 
-    q ?  res.json(allDatas.slice(0, 10)): "";
+// GET BOOKS BY SEARCH
+router.get("/get/all/", async (req, res) => {
+    const { q } = req.query
+    try {
+        const books = await Book.find({ $or: [{ book_name: { $regex: q, $options: 'i' } }] })
+        
+        q ? res.status(200).json(books.slice(0, 10)) : "";
+    } catch (error) {
+        res.status(500).json(error)
+    }
 })
 
 
