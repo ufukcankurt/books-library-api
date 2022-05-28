@@ -1,6 +1,7 @@
 const express = require("express");
 const verify = require("../verifyToken")
 const User = require("../models/User");
+const Book = require("../models/Book");
 const router = express.Router();
 
 
@@ -196,6 +197,24 @@ router.get("/", verify, async (req, res) => { // "/?new=true" --> query
     } else {
         res.status(403).json("You are not allowed to see all users! ")
     }
+})
+
+// GET BOOKS OR USERS BY SEARCH
+router.get("/get/all/", async (req, res) => {
+    const { q } = req.query
+    const keysUser = ["fullname"];
+
+    const users = await User.find({ $or: [{ fullname: { $regex: q, $options: 'i' } }] })
+    const books = await Book.find({ $or: [{ book_name: { $regex: q, $options: 'i' } }] })
+
+    const allDatas = users.concat(...books)
+
+    const search = (data) => {
+        return data.filter((item) =>
+            keys.some((key) => item[key].toLowerCase().includes(q.toLowerCase())))
+    }
+
+    q ?  res.json(allDatas.slice(0, 10)): "";
 })
 
 
