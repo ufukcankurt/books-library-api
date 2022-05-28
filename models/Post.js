@@ -7,18 +7,16 @@ const PostSchema = new mongoose.Schema({
     },
     bookId: {
         type: String,
-        required: true
     },
-    postType: {
+    type: {
         type: String,
-        required: true
+        required: true 
     },
     desc: {
         type: String,
     },
     bookStatus: {
         type: String,
-        required: true
     }
 },
     { timestamps: true }
