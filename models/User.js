@@ -84,11 +84,11 @@ const UserSchema = new mongoose.Schema({
     },
     profilePicture: {
         type: String,
-        default: "noAvatar.png"
+        default: "https://firebasestorage.googleapis.com/v0/b/book-library-b3f35.appspot.com/o/images%2FnoAvatar.png?alt=media&token=e62edf73-1cd0-4f83-b104-85a714d216c7"
     },
     coverPicture: {
         type: String,
-        default: "noCover.jpg"
+        default: "https://firebasestorage.googleapis.com/v0/b/book-library-b3f35.appspot.com/o/images%2FnoCover.jpg?alt=media&token=9d03b764-bd65-4c0a-8c41-dccb6b3b8be2"
     },
     followers: {
         type: Array,
