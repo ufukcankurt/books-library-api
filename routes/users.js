@@ -25,6 +25,7 @@ router.get("/", async (req, res) => {
 
 // Update User  
 router.put("/:id", verify, async (req, res) => {
+    console.log(req.body);
     // req.user.id === this is coming from verifyToken (req.user)
     // allow if user id is equal or is admin
     if (req.user.id === req.params.id || req.user.isAdmin) {
@@ -214,11 +215,11 @@ router.get("/get/all/", async (req, res) => {
 })
 
 // GET BOOKS BY SEARCH
-router.get("/get/all/", async (req, res) => {
+router.get("/get/book/", async (req, res) => {
     const { q } = req.query
     try {
         const books = await Book.find({ $or: [{ book_name: { $regex: q, $options: 'i' } }] })
-        
+
         q ? res.status(200).json(books.slice(0, 10)) : "";
     } catch (error) {
         res.status(500).json(error)
