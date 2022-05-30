@@ -62,7 +62,7 @@ router.post("/login", async (req, res) => {
         const { password, ...info } = user._doc;
 
         // CREATE JWT
-        const accessToken = jwt.sign({ id: user._id, isAdmin: user.isAdmin }, process.env.SECRET_KEY, { expiresIn: "100d" })
+        const accessToken = jwt.sign({ id: user._id, isAdmin: user.isAdmin }, process.env.SECRET_KEY, { expiresIn: "365d" })
 
         res.status(200).json({ ...info, accessToken })
     } catch (error) {
