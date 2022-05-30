@@ -25,6 +25,7 @@ mongoose.connect(
     })
 
 //middleware
+app.use(express.static('public'))
 app.use(express.json()); // body parser when you make  post request.. İt just gonna password it
 app.use(helmet());
 app.use(morgan("common")); // show on terminal| your date and request type and adress and status and duration of response
