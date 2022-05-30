@@ -13,17 +13,20 @@ router.get("/", (req, res) => {
 router.post("/register", async (req, res) => {
     console.log('aaa');
     console.log(req.body);
-
     const formData = req.body.formData;
+
+    const userUsername = await User.findOne({ username: formData.username });
+    userUsername && res.status(401).json({ message: "Böyle bir kullanıcı ismi bulunmaktadır." });
+
+    const userMail = await User.findOne({ email: formData.email });
+    userMail && res.status(401).json({ message: "Böyle bir E-mail adresi bulunmaktadır." });
 
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(formData.password, salt);
 
     const generatedUserId = uuidv4();
     const sanitizedEmail = formData.email.toLowerCase()
-
     try {
-
         const newUser = new User({
             userId: generatedUserId,
             fullname: formData.full_name,
@@ -35,18 +38,6 @@ router.post("/register", async (req, res) => {
             dob_year: formData.dob_year,
             gender: formData.gender_identity
         })
-
-        // const newUser = new User({
-        //     userId:generatedUserId,
-        //     fullname: req.body.fullname,
-        //     username: req.body.username,
-        //     email: req.body.email,
-        //     password: req.body.password,
-        //     dob_day: req.body.dob_day,
-        //     dob_month: req.body.dob_month,
-        //     dob_year: req.body.dob_year,
-        //     gender: req.body.gender
-        // })
 
         // mongoose automatically will save your user to DB
         const user = await newUser.save();
@@ -61,19 +52,19 @@ router.post("/register", async (req, res) => {
 router.post("/login", async (req, res) => {
     try {
         const user = await User.findOne({ username: req.body.username });
-        !user && res.status(401).json("Yanlış kullanıcı adı yada şifre")
+        !user && res.status(401).json("Yanlış kullanıcı adı!")
 
         // compare passwords
         const validPassword = await bcrypt.compare(req.body.password, user.password)
-        !validPassword && res.status(400).json("wrong password"); // 400 - wrong password
+        !validPassword && res.status(400).json("Yanlış şifre!"); // 400 - wrong password
 
         // _doc == all the information we receive
         const { password, ...info } = user._doc;
 
         // CREATE JWT
-        const accessToken = jwt.sign({ id: user._id, isAdmin: user.isAdmin }, process.env.SECRET_KEY, { expiresIn: "5d" })
+        const accessToken = jwt.sign({ id: user._id, isAdmin: user.isAdmin }, process.env.SECRET_KEY, { expiresIn: "100d" })
 
-        res.status(200).json({...info, accessToken})
+        res.status(200).json({ ...info, accessToken })
     } catch (error) {
         res.status(500).json(error)
     }
