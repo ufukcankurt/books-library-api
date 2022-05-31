@@ -43,5 +43,5 @@ app.use("/api/todayInHistory", todayInHistoryRoute);
 
 
 
-app.listen(process.env.PORT || 3000, () => console.log("Backend server is running!"))
+app.listen(process.env.PORT || 8000, () => console.log("Backend server is running!"))
 
