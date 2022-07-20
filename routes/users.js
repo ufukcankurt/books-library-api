@@ -230,5 +230,17 @@ router.get("/get/book/", async (req, res) => {
     }
 })
 
+// GET BOOKS BY category
+router.get("/get/book/category", async (req, res) => {
+    const { q } = req.query
+    try {
+        const books = await Book.find({ $or: [{ book_genre: { $regex: q, $options: 'i' } }] })
+
+        q ? res.status(200).json(books) : "";
+    } catch (error) {
+        res.status(500).json(error)
+    }
+})
+
 
 module.exports = router;
