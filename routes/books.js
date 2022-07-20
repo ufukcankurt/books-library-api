@@ -67,6 +67,15 @@ router.get("/:id", verify, async (req, res) => {
 
 })
 
+//GET ALL BOOKS
+router.get("/all/books", async (req, res) => {
+    try {
+        const books = await Book.find();    
+        res.status(200).json(books);
+    } catch (err) {
+        res.status(500).json(err);
+    }
+});
 
 
 module.exports = router;
