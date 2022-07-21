@@ -58,8 +58,8 @@ router.get("/:id", verify, async (req, res) => {
     // even if we're not an admin we can read book we can see any information about books. 
     // So there is no need to be admin
     try {
-        const movie = await Book.findById(req.params.id)
-        res.status(200).json(movie);
+        const book = await Book.findById(req.params.id)
+        res.status(200).json(book);
     } catch (error) {
         console.log(error);
         res.status(500).json(error)
