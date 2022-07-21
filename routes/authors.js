@@ -17,4 +17,21 @@ router.get("/:id", verify, async (req, res) => {
 })
 
 
+// CREATE A AUTHOR
+router.post("/", verify, async (req, res) => {
+    if (req.user.isAdmin) {
+        const newAuthor = new Author(req.body)
+
+        try {
+            const savedAuthor = await newAuthor.save();
+            res.status(201).json(savedAuthor);
+        } catch (error) {
+            res.status(500).json(error)
+        }
+    } else {
+        res.status(403).json("You're not allowed") // 403|forbidden
+    }
+})
+
+
 module.exports = router;
