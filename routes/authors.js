@@ -65,5 +65,17 @@ router.delete("/:id", verify, async (req, res) => {
 })
 
 
+// GET AUTHORS BY Author Name
+router.get("/get/author/name", async (req, res) => {
+    const { q } = req.query
+    try {
+        const author = await Author.find({ $or: [{ authorName: { $regex: q, $options: 'i' } }] })
+
+        q ? res.status(200).json(author) : "";
+    } catch (error) {
+        res.status(500).json(error)
+    }
+})
+
 
 module.exports = router;
