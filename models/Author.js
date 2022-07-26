@@ -8,11 +8,19 @@ const AuthorSchema = new mongoose.Schema({
     authorTitle: {
         type: String,
     },
-    authorBirth: {
+    authorBorn: {
+        type: String,
+        required: true
+    },
+    authorBornPlace: {
         type: String,
         required: true
     },
     authorDeath: {
+        type: String,
+        required: true
+    },
+    authorDeathPlace: {
         type: String,
         required: true
     },
