@@ -17,6 +17,10 @@ const BookSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    book_authorId: {
+        type: String,
+        required: true
+    },
     book_page: {
         type: Number,
         required: true
