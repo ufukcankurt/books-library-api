@@ -29,7 +29,6 @@ router.put("/:id", verify, async (req, res) => {
     // req.user.id === this is coming from verifyToken (req.user)
     // allow if user id is equal or is admin
     if (req.user.id === req.params.id || req.user.isAdmin) {
-        console.log("İLK LOGA GİRİYORUM İF İÇİ");
         // first we have to check if the password has changed
         // if (req.body.password) {
         //     const salt = await bcrypt.genSalt(10);
@@ -38,16 +37,13 @@ router.put("/:id", verify, async (req, res) => {
         // }
 
         try {
-            console.log("TRY İÇİNE GİRİYORUM ");
             // firstly we can find this user (req.params.id)
             // and then we can set new properties  // we send all body 
             const updatedUser = await User.findByIdAndUpdate(req.params.id, {
                 $set: req.body,
             }, { new: true }) // after setting new user
             res.status(200).json(updatedUser)
-            console.log("DATAYI 200 LEDİM");
         } catch (error) {
-            console.log("ERRORDAYIZ");
             res.status(500).json(error)
         }
 
