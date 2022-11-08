@@ -1,14 +1,18 @@
 const Post = require("../models/Post");
 const User = require("../models/User")
+const verify = require("../verifyToken")
 
 const router = require("express").Router();
 
 // CREATE A POST
 router.post("/", async (req, res) => {
     const newPost = new Post(req.body);
+    const lastPost = { ...newPost, likes: [] }
+    console.log("newPost", newPost);
+    console.log("lastPost", lastPost);
 
     try {
-        const savedPost = await newPost.save();
+        const savedPost = await lastPost.save();
         res.status(200).json(savedPost);
     } catch (error) {
         console.log(error);
@@ -59,20 +63,56 @@ router.get("/profile/:username", async (req, res) => {
 // GET TİMELİNE POST
 router.get("/timeline/:userId", async (req, res) => {
     try {
-      const currentUser = await User.findById(req.params.userId);
-      const userPosts = await Post.find({ userId: currentUser._id });
-      const friendPosts = await Promise.all(
-        currentUser.followings.map((friendId) => {
-          return Post.find({ userId: friendId });
-        })
-      );
-      const allPosts = userPosts.concat(...friendPosts)
-    //   const allPosts = [...userPosts, ...friendPosts]
-      res.status(200).json(allPosts);
+        const currentUser = await User.findById(req.params.userId);
+        const userPosts = await Post.find({ userId: currentUser._id });
+        const friendPosts = await Promise.all(
+            currentUser.followings.map((friendId) => {
+                return Post.find({ userId: friendId });
+            })
+        );
+        const allPosts = userPosts.concat(...friendPosts)
+        //   const allPosts = [...userPosts, ...friendPosts]
+        res.status(200).json(allPosts);
     } catch (err) {
-      res.status(500).json(err);
+        res.status(500).json(err);
     }
-  });
+});
+
+// LIKE POST
+router.put("/like/:postId", verify, async (req, res) => {
+
+    const postId = req.params.postId;
+    const userId = req.user.id;
+
+    try {
+        await Post.findByIdAndUpdate(postId, {
+            $addToSet: { likes: userId }
+        })
+        res.status(200).json("Post has been liked")
+    } catch (error) {
+        res.status(500).json(error)
+        console.log(error);
+    }
+
+})
+
+// DISLIKE POST
+router.put("/dislike/:postId", verify, async (req, res) => {
+
+    const postId = req.params.postId;
+    const userId = req.user.id;
+
+    try {
+        await Post.findByIdAndUpdate(postId, {
+            $pull: { likes: userId }
+        })
+        res.status(200).json("Post has been disliked")
+    } catch (error) {
+        res.status(500).json(error)
+        console.log(error);
+    }
+
+})
 
 
 
