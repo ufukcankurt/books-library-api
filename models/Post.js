@@ -10,13 +10,17 @@ const PostSchema = new mongoose.Schema({
     },
     type: {
         type: String,
-        required: true 
+        required: true
     },
     desc: {
         type: String,
     },
     bookStatus: {
         type: String,
+    },
+    likes: {
+        type: [String],
+        default: []
     }
 },
     { timestamps: true }
