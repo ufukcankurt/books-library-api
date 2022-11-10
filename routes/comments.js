@@ -1,6 +1,7 @@
 const verify = require("../verifyToken")
 const Comment = require("../models/Comment")
 const Post = require("../models/Post")
+const User = require("../models/User")
 
 const router = require("express").Router();
 
@@ -38,11 +39,23 @@ router.delete("/:id", verify, async (req, res) => {
 })
 
 // GET COMMENTS OF A POST
-router.get("/:postId", verify, async (req, res) => {
+router.get("/:postId", async (req, res) => {
 
     try {
         const comments = await Comment.find({ postId: req.params.postId });
-        res.status(200).json(comments);
+        const obj = {};
+
+        const newComments = await Promise.all(
+            comments.map(async (comment)=> {
+                const user = await User.findById(comment.userId);
+                const { password, updatedAt, ...other } = user._doc
+                obj.comment = comment;
+                obj.user = other;
+                return obj;
+            })
+        )
+
+        res.status(200).json(newComments);
     } catch (error) {
         res.status(500).json(error)
     }
