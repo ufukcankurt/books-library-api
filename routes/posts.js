@@ -49,9 +49,20 @@ router.get("/:id", async (req, res) => {
         const { password, updatedAt, ...other } = user._doc
         const comments = await Comment.find({ postId: post._id });
 
+        const commentsDetails = await Promise.all(
+            comments.map(async (comment) => {
+                const user = await User.findById(comment.userId);
+                const { password, updatedAt, ...other } = user._doc
+                const obj = {}
+                obj.comment = comment;
+                obj.user = other;
+                return obj
+            })
+        )
+
         obj.post = post;
         obj.user = other;
-        obj.comments = comments;
+        obj.comments = commentsDetails;
 
         if (post.type !== "post") {
             const book = await Book.findById(post.bookId);
@@ -78,9 +89,20 @@ router.get("/profile/getall/:username", async (req, res) => {
                 const { password, updatedAt, ...other } = user._doc
                 const comments = await Comment.find({ postId: post._id });
 
+                const commentsDetails = await Promise.all(
+                    comments.map(async (comment) => {
+                        const user = await User.findById(comment.userId);
+                        const { password, updatedAt, ...other } = user._doc
+                        const obj = {}
+                        obj.comment = comment;
+                        obj.user = other;
+                        return obj
+                    })
+                )
+
                 obj.post = post;
                 obj.user = other;
-                obj.comments = comments;
+                obj.comments = commentsDetails;
 
                 if (post.type !== "post") {
                     const book = await Book.findById(post.bookId);
@@ -129,10 +151,20 @@ router.get("/timeline/getall/:userId", async (req, res) => {
                 const user = await User.findById(post.userId);
                 const { password, updatedAt, ...other } = user._doc
                 const comments = await Comment.find({ postId: post._id });
+                const commentsDetails = await Promise.all(
+                    comments.map(async (comment) => {
+                        const user = await User.findById(comment.userId);
+                        const { password, updatedAt, ...other } = user._doc
+                        const obj = {}
+                        obj.comment = comment;
+                        obj.user = other;
+                        return obj
+                    })
+                )
 
                 obj.post = post;
                 obj.user = other;
-                obj.comments = comments;
+                obj.comments = commentsDetails;
 
                 if (post.type !== "post") {
                     const book = await Book.findById(post.bookId);
